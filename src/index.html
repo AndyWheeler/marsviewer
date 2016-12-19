@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset = "utf-8">
     <title>Mars Viewer</title>
     <style type="text/css">
 
@@ -60,6 +60,10 @@
 				margin-top: 0;
 			}
 
+			select {
+			    width: 150px;
+			}
+
 			p {
 				color: #555;
 			}
@@ -106,6 +110,31 @@
     <nav id="nav">
         <div class="innertube">
             <h3>Control board</h3>
+            <form>
+                <fieldset>
+                    <legend>Image Selector:</legend>
+                    Rover:<br>
+                    <select id="rover">
+                        <option selected value="rover">Pick a rover</option>
+                        <option value="spirit">Spirit</option>
+                        <option value="opportunity">Opportunity</option>
+                        <option value="curiosity">Curiosity</option>
+                    </select><br>
+                    Sol:<br>
+                    <select id="sol">
+                        <option selected id="default_sol">Choose rover and/or camera</option>
+                    </select><br>
+                    Camera:<br>
+                    <select id="cam">
+                        <option selected id="default_cam">Choose rover and/or sol</option>
+                    </select><br>
+                    Photo #:<br>
+                    <select id="photo">
+                        <option selected id="default_photo">Choose at least a rover</option>
+                    </select><br>
+                    <input type="submit" value="Submit">
+                </fieldset>
+            </form>
         </div>
     </nav>
 
