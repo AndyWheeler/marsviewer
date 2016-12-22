@@ -1,0 +1,74 @@
+body {
+    margin:0;
+    padding:0;
+    font-family: Sans-Serif;
+    line-height: 1.5em;
+}
+
+#header {
+    background: #000 url("./img/marsbar.png") no-repeat;
+    height: 175px;
+}
+
+#header h1 {
+    margin: 0;
+    padding-top: 15px;
+    color: #999
+}
+
+main {
+    padding-bottom: 10010px;
+    margin-bottom: -10000px;
+    float: left;
+    width: 100%;
+    text-align: center;
+}
+
+#nav {
+    padding-bottom: 10010px;
+    margin-bottom: -10000px;
+    float: left;
+    width: 230px;
+    margin-left: -100%;
+    background: #ddd;
+}
+
+#footer {
+    clear: left;
+    width: 100%;
+    background: #bbb;
+    text-align: center;
+    padding: 4px 0;
+}
+
+#wrapper {
+    overflow: hidden;
+}
+
+#content {
+    margin-left: 230px; /* Same as 'nav' width */
+}
+
+.innertube {
+    margin: 15px; /* Padding for content */
+    margin-top: 0;
+}
+
+select {
+    width: 150px;
+}
+
+p {
+    color: #555;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul a {
+    color: darkred;
+    text-decoration: none;
+}

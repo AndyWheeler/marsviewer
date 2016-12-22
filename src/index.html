@@ -3,88 +3,11 @@
 <head>
     <meta charset = "utf-8">
     <title>Mars Viewer</title>
-    <style type="text/css">
 
-			body {
-				margin:0;
-				padding:0;
-				font-family: Sans-Serif;
-				line-height: 1.5em;
-			}
+    <link rel="stylesheet" type="text/css" href="marsStyle.css">
 
-			#header {
-				background: #000 url("./img/marsbar.png") no-repeat;
-				height: 175px;
-			}
-
-			#header h1 {
-				margin: 0;
-				padding-top: 15px;
-				color: #999
-			}
-
-			main {
-				padding-bottom: 10010px;
-				margin-bottom: -10000px;
-				float: left;
-				width: 100%;
-				text-align: center;
-			}
-
-			#nav {
-				padding-bottom: 10010px;
-				margin-bottom: -10000px;
-				float: left;
-				width: 230px;
-				margin-left: -100%;
-				background: #eee;
-			}
-
-			#footer {
-				clear: left;
-				width: 100%;
-				background: #ccc;
-				text-align: center;
-				padding: 4px 0;
-			}
-
-			#wrapper {
-				overflow: hidden;
-			}
-
-			#content {
-				margin-left: 230px; /* Same as 'nav' width */
-			}
-
-			.innertube {
-				margin: 15px; /* Padding for content */
-				margin-top: 0;
-			}
-
-			select {
-			    width: 150px;
-			}
-
-			p {
-				color: #555;
-			}
-
-			nav ul {
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-
-			nav ul a {
-				color: darkred;
-				text-decoration: none;
-			}
-
-		</style>
-
-    <script type="text/javascript">
-
-		</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="marsScript.js"></script>
 
 </head>
 
@@ -114,23 +37,27 @@
             <form>
                 <fieldset>
                     <legend>Image Selector:</legend>
+
                     Rover:<br>
-                    <select id="rover">
+                    <select id="rover-select">
                         <option selected value="rover">Pick a rover</option>
                         <option value="spirit">Spirit</option>
                         <option value="opportunity">Opportunity</option>
                         <option value="curiosity">Curiosity</option>
                     </select><br>
+
                     Sol:<br>
-                    <select id="sol">
+                    <select id="sol-select">
                         <option selected id="default_sol">Choose rover and/or camera</option>
                     </select><br>
+
                     Camera:<br>
-                    <select id="cam">
+                    <select id="cam-select">
                         <option selected id="default_cam">Choose rover and/or sol</option>
                     </select><br>
+
                     Photo #:<br>
-                    <select id="photo">
+                    <select id="photo-select">
                         <option selected id="default_photo">Choose at least a rover</option>
                     </select><br>
                     <input type="submit" value="Submit">
