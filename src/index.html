@@ -25,8 +25,12 @@
     <main>
         <div id="content">
             <div class="innertube">
-                <h1>Image from Mars</h1>
-                <p> Here it will be.</p>
+                <h1>Incoming from Mars</h1>
+                <b>API URL:</b>
+                <div id="reqObject"><p></p></div>
+                <br/>
+                <b>Return Object:</b>
+                <div id="returnObject"><p></p></div>
             </div>
         </div>
     </main>
@@ -39,25 +43,25 @@
                     <legend>Image Selector:</legend>
 
                     Rover:<br>
-                    <select id="rover-select">
-                        <option selected value="rover">Pick a rover</option>
+                    <select id="roverSelect">
+                        <option selected value="none">Pick a rover</option>
                         <option value="spirit">Spirit</option>
                         <option value="opportunity">Opportunity</option>
                         <option value="curiosity">Curiosity</option>
                     </select><br>
 
                     Sol:<br>
-                    <select id="sol-select">
+                    <select id="solSelect">
                         <option selected id="default_sol">Choose rover and/or camera</option>
                     </select><br>
 
                     Camera:<br>
-                    <select id="cam-select">
+                    <select id="camSelect">
                         <option selected id="default_cam">Choose rover and/or sol</option>
                     </select><br>
 
                     Photo #:<br>
-                    <select id="photo-select">
+                    <select id="photoSelect">
                         <option selected id="default_photo">Choose at least a rover</option>
                     </select><br>
                     <input type="submit" value="Submit">
