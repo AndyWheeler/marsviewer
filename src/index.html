@@ -26,11 +26,14 @@
         <div id="content">
             <div class="innertube">
                 <h1>Incoming from Mars</h1>
-                <b>API URL:</b>
-                <div id="reqObject"><p></p></div>
-                <br/>
-                <b>Return Object:</b>
-                <div id="returnObject"><p></p></div>
+                Image:
+                <img id="marsImg"/><br>
+                <p>
+                Rover: <div id="marsRover"></div>
+                Sol: <div id="marsSol"></div>
+                Camera: <div id="marsCam"></div>
+                Photo ID: <div id="marsPhotoID"></div>
+                </p>
             </div>
         </div>
     </main>
@@ -64,7 +67,6 @@
                     <select id="photoSelect">
                         <option selected id="default_photo">Choose a rover</option>
                     </select><br>
-                    <input type="submit" value="Submit">
                 </fieldset>
             </form>
         </div>

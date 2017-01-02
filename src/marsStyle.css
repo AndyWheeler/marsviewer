@@ -49,6 +49,10 @@ main {
     margin-left: 230px; /* Same as 'nav' width */
 }
 
+#marsImg {
+    max-width: 600px;
+}
+
 .innertube {
     margin: 15px; /* Padding for content */
     margin-top: 0;
