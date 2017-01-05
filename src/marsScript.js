@@ -1,4 +1,7 @@
 $(function() {
+    //var manifestCache = {};
+    var photoCache = {};
+
     //When a Rover is selected:
     $("#roverSelect").change(function() {
 
@@ -77,17 +80,22 @@ $(function() {
         var $sol = $("#solSelect").val();
         var $cam = $(this).val();
 
-        var url = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + $rover +
-                  "/photos?sol=" + $sol + "&camera=" + $cam + "&api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
-        $.ajax({
-            url:url, success: function(result) {
-                $("#photoSelect").empty();
-                addOption($("#photoSelect"), "Choose a photo");
-                for(i = 0, len = result.photos.length; i < len; i++) {
-                    addOption($("#photoSelect"), i + " - " + result.photos[i].id);
+        var cacheKey = $rover + $sol + $cam;
+        if(!(cacheKey in photoCache)) {
+            var url = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + $rover +
+                      "/photos?sol=" + $sol + "&camera=" + $cam + "&api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
+            $.ajax({
+                url:url, success: function(result) {
+                    photoCache[cacheKey] = result;
                 }
-            }
-        })
+            })
+        }
+        var result = photoCache[cacheKey];
+        $("#photoSelect").empty();
+        addOption($("#photoSelect"), "Choose a photo");
+        for(i = 0, len = result.photos.length; i < len; i++) {
+            addOption($("#photoSelect"), i + " - " + result.photos[i].id);
+        }
     })
 
     //When a Photo is selected:
@@ -98,24 +106,30 @@ $(function() {
         var $cam = $("#camSelect").val();
         var $photo = $(this).val();
 
-        var url = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + $rover +
-                  "/photos?sol=" + $sol + "&camera=" + $cam + "&api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
-        $.ajax({
-            url:url, success: function(result) {
-                var index = 0;
-                for(i = 0; i < $photo.length; i++) {
-                    if($photo.charAt(i) === " ") {
-                        index = $photo.substring(0, i-2);
-                    }
+        var cacheKey = $rover + $sol + $cam;
+        if(!(cacheKey in photoCache)) {
+            var url = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + $rover +
+                      "/photos?sol=" + $sol + "&camera=" + $cam + "&api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
+            $.ajax({
+                url:url, success: function(result) {
+                    photoCache[cacheKey] = result;
                 }
-                var photo = result.photos[index];
-                $("#marsImg").attr("src", photo.img_src);
-                $("#marsRover").text(photo.rover.name);
-                $("#marsSol").text(photo.sol);
-                $("#marsCam").text(photo.camera.name);
-                $("#marsPhotoID").text(photo.id);
+            })
+        }
+        var result = photoCache[cacheKey];
+
+        var index = 0;
+        for(i = 0; i < $photo.length; i++) {
+            if($photo.charAt(i) === " ") {
+                index = $photo.substring(0, i-2);
             }
-        })
+        }
+        var photo = result.photos[index];
+        $("#marsImg").attr("src", photo.img_src);
+        $("#marsRover").text(photo.rover.name);
+        $("#marsSol").text(photo.sol);
+        $("#marsCam").text(photo.camera.name);
+        $("#marsPhotoID").text(photo.id);
     })
 })
                 /*
