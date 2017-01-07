@@ -1,5 +1,5 @@
 $(function() {
-    //var manifestCache = {};
+    var manifestCache = {};
     var photoCache = {};
 
     //When a Rover is selected:
@@ -7,33 +7,42 @@ $(function() {
 
         var $rover =  $(this).val();
 
-        $("#solSelect").empty();
-        $("#camSelect").empty();
-        $("#photoSelect").empty();
-
         if($rover == "none") {
+            $("#solSelect").empty();
+            $("#camSelect").empty();
+            $("#photoSelect").empty();
             addOption($("#solSelect"), "Choose a rover");
             addOption($("#camSelect"), "Choose a rover");
             addOption($("#photoSelect"), "Choose a rover");
-            return;
         }
         else {
-            addOption($("#solSelect"), "Choose a sol");
-            addOption($("#camSelect"), "Choose a sol");
-            addOption($("#photoSelect"), "Choose a sol");
-        }
-
-        var url = "https://api.nasa.gov/mars-photos/api/v1/manifests/" + $rover + "/?api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
-        $.ajax({
-            url:url, success: function(result) {
+            if(!($rover in manifestCache)) {
+                var url = "https://api.nasa.gov/mars-photos/api/v1/manifests/" + $rover + "/?api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
+                $.ajax({
+                    url:url, success: function(result) {
+                        manifestCache[$rover] = result;
+                        fillSol(result);
+                    }
+                })
+            }
+            else {
+                fillSol(manifestCache[$rover]);
+            }
+            function fillSol(result) {
+                $("#solSelect").empty();
+                $("#camSelect").empty();
+                $("#photoSelect").empty();
+                addOption($("#solSelect"), "Choose a sol");
+                addOption($("#camSelect"), "Choose a sol");
+                addOption($("#photoSelect"), "Choose a sol");
                 var manifest = result.photo_manifest;
                 var startSol = manifest.photos[0].sol;
                 var endSol = manifest.max_sol;
-                for (i = startSol; i <= endSol; i++) {
+                for (i = startSol; i < endSol; i++) {
                     addOption($("#solSelect"), i);
                 }
             }
-        })
+        }
     })
 
     //When a Sol is selected:
@@ -42,35 +51,33 @@ $(function() {
         var $rover = $("#roverSelect").val();
         var $sol = $(this).val();
 
-        var url = "https://api.nasa.gov/mars-photos/api/v1/manifests/" + $rover + "/?api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
-        $.ajax({
-            url:url, success: function(result) {
-                var manifest = result.photo_manifest;
-                var cams = [];
-                //TODO: implement binary search instead of linear
-                for(i = 0; manifest.photos[i].sol <= $sol; i++) {
-                    console.log("i: " + i + ", Manifest sol: " + manifest.photos[i].sol + ", selected sol: " + $sol);
-                    if(manifest.photos[i].sol == $sol) {
-                        console.log("Cams: " + manifest.photos[i].cameras);
-                        cams = manifest.photos[i].cameras;
-                    }
-                }
-                if(cams.length == 0) {
-                    $("#camSelect").empty();
-                    addOption($("#camSelect"), "No photos today");
-                }
-                else {
-                    $("#camSelect").empty();
-                    addOption($("#camSelect"), "Choose a camera");
-                    for (i = 0; i < cams.length; i++) {
-                        addOption($("#camSelect"), cams[i]);
-                    }
-                }
-                $("#photoSelect").empty();
-                addOption($("#photoSelect"), "Choose a camera");
-
+        var manifest = manifestCache[$rover].photo_manifest;
+        var cams = [];
+        //TODO: implement better search
+        for(i = 0, len = manifest.photos.length; i < len; i++) {
+        //for(i = 0; manifest.photos[i].sol <= $sol; i++){
+            //console.log("i: " + i + ", latest sol: " + manifest.max_sol);
+            console.log("i: " + i + ", Manifest sol: " + manifest.photos[i].sol + ", selected sol: " + $sol);
+            if(manifest.photos[i].sol == $sol) {
+                console.log("Cams: " + manifest.photos[i].cameras);
+                cams = manifest.photos[i].cameras;
+                break;
             }
-        })
+        }
+        if(cams.length == 0) {
+            $("#camSelect").empty();
+            addOption($("#camSelect"), "No photos today");
+        }
+        else {
+            $("#camSelect").empty();
+            addOption($("#camSelect"), "Choose a camera");
+            for (i = 0; i < cams.length; i++) {
+                addOption($("#camSelect"), cams[i]);
+            }
+        }
+        $("#photoSelect").empty();
+        addOption($("#photoSelect"), "Choose a camera");
+
     })
 
     //When a Camera is selected:
@@ -82,19 +89,32 @@ $(function() {
 
         var cacheKey = $rover + $sol + $cam;
         if(!(cacheKey in photoCache)) {
+            $("#photoSelect").empty();
+            addOption($("#photoSelect"), "Retrieving data...");
             var url = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + $rover +
                       "/photos?sol=" + $sol + "&camera=" + $cam + "&api_key=WST7uBsYnZfuF98F3qoysnLaUnONazrtDKLs9xJ9";
             $.ajax({
-                url:url, success: function(result) {
+                url:url,
+                success: function(result) {
                     photoCache[cacheKey] = result;
+                    fillPhotos(result);
+                },
+                error: function (err) {
+                    $("#photoSelect").empty();
+                    addOption($("#photoSelect"), err.responseText);
                 }
             })
         }
-        var result = photoCache[cacheKey];
-        $("#photoSelect").empty();
-        addOption($("#photoSelect"), "Choose a photo");
-        for(i = 0, len = result.photos.length; i < len; i++) {
-            addOption($("#photoSelect"), i + " - " + result.photos[i].id);
+        else {
+            fillPhotos(photoCache[cacheKey]);
+        }
+
+        function fillPhotos(result) {
+            $("#photoSelect").empty();
+            addOption($("#photoSelect"), "Choose a photo");
+            for(i = 0, len = result.photos.length; i < len; i++) {
+                addOption($("#photoSelect"), i + " - " + result.photos[i].id);
+            }
         }
     })
 
@@ -113,23 +133,28 @@ $(function() {
             $.ajax({
                 url:url, success: function(result) {
                     photoCache[cacheKey] = result;
+                    displayPhoto(result);
                 }
             })
         }
-        var result = photoCache[cacheKey];
-
-        var index = 0;
-        for(i = 0; i < $photo.length; i++) {
-            if($photo.charAt(i) === " ") {
-                index = $photo.substring(0, i-2);
-            }
+        else {
+            displayPhoto(photoCache[cacheKey]);
         }
-        var photo = result.photos[index];
-        $("#marsImg").attr("src", photo.img_src);
-        $("#marsRover").text(photo.rover.name);
-        $("#marsSol").text(photo.sol);
-        $("#marsCam").text(photo.camera.name);
-        $("#marsPhotoID").text(photo.id);
+
+        function displayPhoto(result) {
+            var index = 0;
+            for(i = 0; i < $photo.length; i++) {
+                if($photo.charAt(i) === " ") {
+                    index = $photo.substring(0, i-2);
+                }
+            }
+            var photo = result.photos[index];
+            $("#marsImg").attr("src", photo.img_src);
+            $("#marsRover").text(photo.rover.name);
+            $("#marsSol").text(photo.sol);
+            $("#marsCam").text(photo.camera.name);
+            $("#marsPhotoID").text(photo.id);
+        }
     })
 })
                 /*
